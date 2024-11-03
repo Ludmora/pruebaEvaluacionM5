@@ -1,187 +1,51 @@
-let personajes=[]
 
+async function* requestRange(inicioId, finalId) {
+  const url = "https://rickandmortyapi.com/api/character/";
+  let id_Personaje = inicioId;
 
-
-
-async function* request(){
-    let id_Personaje=1
-    let url="https://rickandmortyapi.com/api/character/"
-
-    while (id_Personaje<7){
-        let personaje= await fetch(url+id_Personaje);
-        let json= await personaje.json()
-        yield json;
-        id_Personaje++
-        
-    }
-
-
-}
-
-let myRequest =request();
-// console.log(myRequest.next())
-
-async function get(){
-const data =await myRequest.next()
-const result = data.value
-console.log(result)
-
-inyectarTarjeta(result)
-
-}
-
-
-function inyectarTarjeta(result){
-  const {name,image,species,gender}=result
-  const cardRow=  document.getElementById("card")
-  
-    let tarjeta=` 
-   <div id="card" class="card" style="width: 18rem;border:solid blue 2px;margin-left:20px  ">
-    <img src="${image}" class="card-img-top" style="height: 70px;width:70px;border-radius:50%; margin:10 auto"alt="...">
-            <div class="card-body" >
-              <h5 class="card-title">${name}</h5>
-              <p class="card-text">Genero:${gender}</p>
-              <p class="card-text">Especie:${species}</p>
-              <a  onclick="get()" class="btn btn-primary">Mostrar siguiente Personaje</a>
-            </div>
-            </div>
-    `
-    cardRow.innerHTML +=tarjeta;
-  
+  while (id_Personaje < finalId) {
+    const personaje = await fetch(url + id_Personaje);
+    const json = await personaje.json();
+    yield json;
+    id_Personaje++;
   }
-
-
-  
-const button = document.getElementById('myButton');
-
-
-// Definimos la función que se ejecutará cuando el mouse se mueva sobre el botón
-function handleMouseMove(event) {
-  console.log(get());
 }
 
-// Asociamos el evento 'mousemove' al botón
-button.addEventListener('mouseenter', handleMouseMove);
 
-
-
-async function* request1(){
-  let id_Personaje=7
-  let url="https://rickandmortyapi.com/api/character/"
-
-  while (id_Personaje<13){
-      let personaje= await fetch(url+id_Personaje);
-      let json= await personaje.json()
-      yield json;
-      id_Personaje++
-      
+async function getCharacter(request, cardId) {
+  const data = await request.next();
+  if (!data.done) {
+    inyectarTarjeta(data.value, cardId);
+  } else {
+    console.log("No hay más personajes en este rango.");
   }
-
-
-}
-
-let myRequest1 =request1();
-// console.log(myRequest.next())
-
-async function get2(){
-const data =await myRequest1.next()
-const result1 = data.value
-console.log(result1)
-
-inyectarTarjeta1(result1)
-
 }
 
 
+function inyectarTarjeta(result, cardId) {
+  const { name, image, species, gender } = result;
+  const cardRow = document.getElementById(cardId);
 
-function inyectarTarjeta1(result1){
-  const {name,image,species,gender}=result1
-  const cardRow=  document.getElementById("card1")
-  
-    let tarjeta1=` 
-    <div id="card" class="card" style="width: 18rem;border:solid blue 2px;margin-left:20px  ">
-    <img src="${image}" class="card-img-top" style="height: 70px;width:70px;border-radius:50%; margin:10 auto"alt="...">
-            <div class="card-body" >
-              <h5 class="card-title">${name}</h5>
-              <p class="card-text">Genero:${gender}</p>
-              <p class="card-text">Especie:${species}</p>
-              <a  onclick="get2()" class="btn btn-primary">Mostrar Otro Personaje</a>
-            </div>
-            </div>
-    `
-    
-    cardRow.innerHTML +=tarjeta1;
-  
-  }
+  const tarjeta = `
+    <div class="card" style="width: 18rem; border: solid 2px; margin-left: 20px;">
+      <img src="${image}" class="card-img-top" style="height: 70px; width: 70px; border-radius: 50%; margin: 10px auto;" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">${name}</h5>
+        <p class="card-text">Género: ${gender}</p>
+        <p class="card-text">Especie: ${species}</p>
+         <button onclick="getCharacter(${cardId === 'card' ? 'myRequest' : cardId === 'card1' ? 'myRequest1' : 'myRequest2'}, '${cardId}')" class="btn btn-primary">Mostrar siguiente personaje</button>
+      </div>
+    </div>
+  `;
 
-
-
-const button2 = document.getElementById('myButton2');
-function handleMouseMove2(event) {
-  console.log(get2());
+  cardRow.innerHTML += tarjeta;
 }
 
-// Asociamos el evento 'mousemove' al botón
-button2.addEventListener('mouseenter', handleMouseMove2);
+let myRequest = requestRange(1, 7);
+let myRequest1 = requestRange(7, 13);
+let myRequest2 = requestRange(13, 19);
 
 
-
-//card3
-async function* request2(){
-  let id_Personaje=13
-  let url="https://rickandmortyapi.com/api/character/"
-
-  while (id_Personaje<19){
-      let personaje= await fetch(url+id_Personaje);
-      let json= await personaje.json()
-      yield json;
-      id_Personaje++
-      
-  }
-
-
-}
-
-let myRequest2 =request2();
-// console.log(myRequest.next())
-
-async function get3(){
-const data =await myRequest2.next()
-const result2 = data.value
-console.log(result2)
-
-inyectarTarjeta2(result2)
-
-}
-
-
-
-function inyectarTarjeta2(result2){
-  const {name,image,species,gender}=result2
-  const cardRow=  document.getElementById("card2")
-  
-    let tarjeta2=` 
-    <div id="card" class="card" style="width: 18rem;border:solid green 2px;margin-left:20px  ">
-    <img src="${image}" class="card-img-top" style="height: 70px;width:70px;border-radius:50% ; margin:10 auto"alt="...">
-            <div class="card-body" >
-              <h5 class="card-title">${name}</h5>
-              <p class="card-text">Genero:${gender}</p>
-              <p class="card-text">Especie:${species}</p>
-              <a  onclick="get3()" class="btn btn-primary">Mostrar Otro Personaje</a>
-            </div>
-            </div>
-    `
-    
-    cardRow.innerHTML +=tarjeta2;
-  
-  }
-
-
-
-const button3 = document.getElementById('myButton3');
-function handleMouseMove3(event) {
-  console.log(get3());
-}
-
-// Asociamos el evento 'mousemove' al botón
-button3.addEventListener('mouseenter', handleMouseMove3);
+document.getElementById('myButton').addEventListener('mouseenter', () => getCharacter(myRequest, 'card'));
+document.getElementById('myButton2').addEventListener('mouseenter', () => getCharacter(myRequest1, 'card1'));
+document.getElementById('myButton3').addEventListener('mouseenter', () => getCharacter(myRequest2, 'card2'));
